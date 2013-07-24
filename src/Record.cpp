@@ -9,6 +9,7 @@
 
 void Record::add(float fitness, int evals)
 {
+	//std::cout << fitness << " " << evals << std::endl;
 	levels.push_back(pair<float, int>(fitness, evals));
 }
 

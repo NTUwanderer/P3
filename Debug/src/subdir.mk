@@ -13,6 +13,7 @@ CPP_SRCS += \
 ../src/OptimizationCollection.cpp \
 ../src/Population.cpp \
 ../src/Pyramid.cpp \
+../src/QuadTree.cpp \
 ../src/RandomRestartHC.cpp \
 ../src/Record.cpp \
 ../src/Util.cpp \
@@ -28,6 +29,7 @@ OBJS += \
 ./src/OptimizationCollection.o \
 ./src/Population.o \
 ./src/Pyramid.o \
+./src/QuadTree.o \
 ./src/RandomRestartHC.o \
 ./src/Record.o \
 ./src/Util.o \
@@ -43,6 +45,7 @@ CPP_DEPS += \
 ./src/OptimizationCollection.d \
 ./src/Population.d \
 ./src/Pyramid.d \
+./src/QuadTree.d \
 ./src/RandomRestartHC.d \
 ./src/Record.d \
 ./src/Util.d \

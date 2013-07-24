@@ -19,6 +19,7 @@ using std::array;
 using std::log;
 #include "Util.h"
 #include "Evaluation.h"
+#include "QuadTree.h"
 
 class Population
 {

@@ -26,6 +26,7 @@ bool Pyramid::add_unique(Random& rand, const vector<bool> & solution, size_t lev
 		{
 			pops.push_back(Population(length));
 			pops[level].never_use_singletons();
+			//std::cout << "Making Level " << level << " seen " << seen.size() << std::endl;
 		}
 		pops[level].add(solution);
 		pops[level].rebuild_tree(rand);
@@ -46,4 +47,16 @@ void Pyramid::optimize(Random& rand, Evaluator& evaluator, Configuration& config
 		hill_climber(rand, solution, fitness, evaluator);
 		climb(rand, solution, fitness, evaluator);
 	}
+	/*
+	for(size_t level=0; level < pops.size(); level++)
+	{
+		std::cout << "Level " << level << " size " << pops[level].solutions.size();
+		float total = 0;
+		for(auto& solution: pops[level].solutions)
+		{
+			total += evaluator.evaluate(solution);
+		}
+		std::cout << " average " << total / pops[level].solutions.size() << std::endl;
+	}
+	*/
 }

@@ -96,62 +96,59 @@ float Population::get_distance(const vector<int> & c1, const vector<int> & c2)
 void Population::rebuild_tree(Random& rand)
 {
 	unordered_set<size_t> usable;
+	vector<bool> invalid(clusters.size(), true);
 	for(size_t i=0; i < length; i++)
 	{
 		usable.insert(i);
+		invalid[i] = false;
 	}
 	// shuffle the single variable clusters
 	shuffle(clusters.begin(), next(clusters.begin(), length), rand);
-	vector<pair<int, int> > minimums;
-	float min_value;
-	int choice;
+	int levels = ceil(log2(clusters.size()));
+	QuadTree quad(rand, levels);
+	//int choice;
 
 	vector<vector<float> > distances(clusters.size(), vector<float>(clusters.size(), -1));
+	//list<QuadTree::data> updates;
+	// collect up the initial information
 	for(size_t i=0; i < length - 1; i++)
 	{
 		for(size_t j=i + 1; j < length; j++)
 		{
 			distances[i][j] = get_distance(clusters[i], clusters[j]);
 			distances[j][i] = distances[i][j];
+			//updates.push_back(QuadTree::data(i, j, distances[i][j]));
+			quad.dirty_insert(i, j, distances[i][j]);
 		}
 	}
+	quad.clean(invalid);
+	//quad.insert(updates);
 
 	// rebuild all clusters after the single variable clusters
 	for(size_t index=length; index < clusters.size(); index++)
 	{
-		min_value=3;
-		minimums.clear();
-		// for all pairs of clusters
-		for(auto i=usable.begin(); i != usable.end(); i++)
-		{
-			for(auto j=next(i); j != usable.end(); j++)
-			{
-				auto x = *i;
-				auto y = *j;
-				float distance = distances[x][y];
-				if(distance <= min_value)
-				{
-					if(distance < min_value)
-					{
-						min_value = distance;
-						minimums.clear();
-					}
-					minimums.push_back(pair<int, int>(x, y));
-				}
-			}
-		}
 		// select a minimum at random
-		choice = std::uniform_int_distribution<int>(0, minimums.size()-1)(rand);
-		size_t first = minimums[choice].first;
-		size_t second = minimums[choice].second;
+		//choice = std::uniform_int_distribution<int>(0, quad.minimums.size()-1)(rand);
+		//auto it = next(quad.minimums.begin(), choice);
+		//size_t first = it->first;
+		//size_t second = it->second;
+		size_t first = quad.minx;
+		size_t second = quad.miny;
+		if(distances[first][second] != quad.min_value)
+		{
+			cout << "DISTANCE " << distances[first][second] << " " << quad.min_value << " " <<quad.minx << " " << quad.miny << endl;
 
+			throw "SHIT";
+		}
 		// create new cluster
 		clusters[index] = clusters[first];
 		clusters[index].insert(clusters[index].end(),
 				clusters[second].begin(), clusters[second].end());
 		usable.erase(first);
 		usable.erase(second);
-
+		invalid[first] = true;
+		invalid[second] = true;
+		//updates.clear();
 		for(auto i=usable.begin(); i != usable.end(); i++)
 		{
 			auto x = *i;
@@ -162,9 +159,37 @@ void Population::rebuild_tree(Random& rand)
 			distances[x][index] = ((first_distance + second_distance) /
 						   (clusters[first].size() + clusters[second].size()));
 			distances[index][x] = distances[x][index];
+			//updates.push_back(QuadTree::data(x, index, distances[x][index]));
+			quad.dirty_insert(x, index, distances[x][index]);
 		}
+		//quad.insert(updates);
+		/*
+		for(auto i=usable.begin(); i != usable.end(); i++)
+		{
+			auto x = *i;
+			quad.top_remove(rand, x, first, levels);
+			quad.top_remove(rand, x, second, levels);
+		}
+		*/
+
 		usable.insert(index);
+		invalid[index] = false;
+		quad.clean(invalid);
 	}
+	/*
+	for(const auto& cluster: clusters)
+	{
+		if(cluster.size() == 5)
+		{
+			for(const auto& entry: cluster)
+			{
+				cout << entry << " ";
+			}
+			cout << endl;
+		}
+	}
+	throw "SHIT";
+	*/
 }
 
 bool Population::donate(vector<bool> & solution, float & fitness, vector<bool> & source, const vector<int> & cluster, Evaluator& evaluator)

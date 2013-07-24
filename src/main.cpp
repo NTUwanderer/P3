@@ -20,9 +20,30 @@ using namespace std;
 #include <memory>
 #include "Record.h"
 #include "Experiments.h"
+#include "QuadTree.h"
 
 int main(int argc, char * argv[])
 {
+	/*
+	QuadTree tree(0, 0, 0);
+
+	tree.toplevel(4, 5, 2, 10);
+	tree.toplevel(2, 5, 2, 9);
+	cout << tree.min_value << endl;
+	for(const auto& min: tree.minimums)
+	{
+		cout <<"("<< min.first << ", " << min.second <<") ";
+	}
+	cout << endl;
+	tree.top_remove(4, 5, 2);
+	cout << tree.min_value << endl;
+	for(const auto& min: tree.minimums)
+	{
+		cout <<"("<< min.first << ", " << min.second <<") ";
+	}
+	cout << endl;
+	return 0;
+	*/
 	Random rand;
 	Configuration config;
 	config.parse(argc, argv);
