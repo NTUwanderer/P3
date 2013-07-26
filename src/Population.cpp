@@ -96,16 +96,17 @@ float Population::get_distance(const vector<int> & c1, const vector<int> & c2)
 void Population::rebuild_tree(Random& rand)
 {
 	unordered_set<size_t> usable;
+	vector<bool> invalid(clusters.size(), true);
 	for(size_t i=0; i < length; i++)
 	{
 		usable.insert(i);
+		invalid[i] = false;
 	}
 	// shuffle the single variable clusters
 	shuffle(clusters.begin(), next(clusters.begin(), length), rand);
-	vector<pair<int, int> > minimums;
-	float min_value;
 	int choice;
-
+	vector<data> heap;
+	vector<data> minimums;
 	vector<vector<float> > distances(clusters.size(), vector<float>(clusters.size(), -1));
 	for(size_t i=0; i < length - 1; i++)
 	{
@@ -113,44 +114,58 @@ void Population::rebuild_tree(Random& rand)
 		{
 			distances[i][j] = get_distance(clusters[i], clusters[j]);
 			distances[j][i] = distances[i][j];
+			heap.emplace_back(i, j, distances[i][j]);
 		}
 	}
-
+	std::make_heap(heap.begin(), heap.end());
+	float min_value = heap.front().value;
 	// rebuild all clusters after the single variable clusters
 	for(size_t index=length; index < clusters.size(); index++)
 	{
-		min_value=3;
-		minimums.clear();
-		// for all pairs of clusters
-		for(auto i=usable.begin(); i != usable.end(); i++)
+		int it=0;
+		int end = int(minimums.size()) - 1;
+		while(it <= end)
 		{
-			for(auto j=next(i); j != usable.end(); j++)
+			if(invalid[minimums[it].x] or invalid[minimums[it].y])
 			{
-				auto x = *i;
-				auto y = *j;
-				float distance = distances[x][y];
-				if(distance <= min_value)
-				{
-					if(distance < min_value)
-					{
-						min_value = distance;
-						minimums.clear();
-					}
-					minimums.push_back(pair<int, int>(x, y));
-				}
+				swap(minimums[it], minimums[end]);
+				end--;
+			}
+			else
+			{
+				it++;
 			}
 		}
-		// select a minimum at random
-		choice = std::uniform_int_distribution<int>(0, minimums.size()-1)(rand);
-		size_t first = minimums[choice].first;
-		size_t second = minimums[choice].second;
+		minimums.resize(end+1);
+		if(minimums.size() == 0)
+		{
+			min_value = 3;
+		}
+		while(heap.size() > 0 and heap.front().value <= min_value)
+		{
+			std::pop_heap(heap.begin(), heap.end());
 
+			// only add to minimums if its valid
+			if(not(invalid[heap.back().x] or invalid[heap.back().y]))
+			{
+				minimums.emplace_back(heap.back().x, heap.back().y, heap.back().value);
+				min_value = heap.back().value;
+			}
+			heap.pop_back();
+		}
+
+		choice = std::uniform_int_distribution<int>(0, minimums.size()-1)(rand);
+		size_t first = minimums[choice].x;
+		size_t second = minimums[choice].y;
 		// create new cluster
 		clusters[index] = clusters[first];
 		clusters[index].insert(clusters[index].end(),
 				clusters[second].begin(), clusters[second].end());
+
 		usable.erase(first);
 		usable.erase(second);
+		invalid[first] = true;
+		invalid[second] = true;
 
 		for(auto i=usable.begin(); i != usable.end(); i++)
 		{
@@ -162,8 +177,11 @@ void Population::rebuild_tree(Random& rand)
 			distances[x][index] = ((first_distance + second_distance) /
 						   (clusters[first].size() + clusters[second].size()));
 			distances[index][x] = distances[x][index];
+			heap.emplace_back(x, index, distances[x][index]);
+			std::push_heap(heap.begin(), heap.end());
 		}
 		usable.insert(index);
+		invalid[index] = false;
 	}
 }
 

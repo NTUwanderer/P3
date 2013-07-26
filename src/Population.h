@@ -19,6 +19,8 @@ using std::array;
 using std::log;
 #include "Util.h"
 #include "Evaluation.h"
+#include <list>
+using std::list;
 
 class Population
 {
@@ -33,6 +35,19 @@ private:
 	size_t length;
 
 	bool donate(vector<bool> & solution, float & fitness, vector<bool> & source, const vector<int> & cluster, Evaluator& evaluator);
+
+	struct data
+	{
+		int x, y;
+		float value;
+		data(int _x=0, int _y=0, float _value=0): x(_x), y(_y), value(_value) {}
+		data(const data&) = default;
+		friend bool operator < (const data &lhs, const data & rhs)
+		{
+			// NOTE THIS IS SWITCHED TO FORCE MIN HEAP
+			return lhs.value > rhs.value;
+		}
+	};
 
 public:
 	Population(int l);
