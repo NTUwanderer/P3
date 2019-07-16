@@ -19,6 +19,8 @@ CPP_SRCS += \
 ../src/RandomRestartHC.cpp \
 ../src/Record.cpp \
 ../src/Util.cpp \
+../src/sat.cpp \
+../src/spin.cpp \
 ../src/main.cpp 
 
 OBJS += \
@@ -37,6 +39,8 @@ OBJS += \
 ./src/RandomRestartHC.o \
 ./src/Record.o \
 ./src/Util.o \
+../src/sat.o \
+../src/spin.o \
 ./src/main.o 
 
 CPP_DEPS += \
@@ -55,6 +59,8 @@ CPP_DEPS += \
 ./src/RandomRestartHC.d \
 ./src/Record.d \
 ./src/Util.d \
+../src/sat.d \
+../src/spin.d \
 ./src/main.d 
 
 
