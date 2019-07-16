@@ -428,13 +428,14 @@ IsingSpinGlass::IsingSpinGlass(Configuration& config, int run_number)
   char filename[200];
   sprintf(filename, "../SPIN/%d/%d_%d",ell, ell, s_num);
   printf("Loading: %s\n", filename);
-  loadSPIN(filename, &mySPIN);
+  // loadSPIN(filename, &mySPIN;
+  loadSPIN(filename, &mySpinGlassParams);
   precision = config.get<int>("precision");
 
-  printf ("opt: %f, fitness_limit: %f\n", mySPIN.opt, config.get<float>("fitness_limit"));
-  config.set("fitness_limit", mySPIN.opt);
+  printf ("opt: %f, fitness_limit: %f\n", mySpinGlassParams.opt, config.get<float>("fitness_limit"));
+  config.set("fitness_limit", mySpinGlassParams.opt);
 
-  printf ("opt: %f, fitness_limit: %f\n", mySPIN.opt, config.get<float>("fitness_limit"));
+  printf ("opt: %f, fitness_limit: %f\n", mySpinGlassParams.opt, config.get<float>("fitness_limit"));
 
   int rng_seed = config.get<int>("problem_seed") + run_number;
   Random rand(rng_seed);
@@ -451,7 +452,7 @@ float IsingSpinGlass::evaluate(const vector<bool>& solution) {
       x[i] = -1;
   }
 
-  double result = evaluateSPIN(x, &mySPIN);
+  double result = evaluateSPIN(x, &mySpinGlassParams);
   delete []x;
 
   // Convert to percentage of total

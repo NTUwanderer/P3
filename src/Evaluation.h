@@ -18,6 +18,7 @@
 #include "Util.h"
 #include "sat.h"
 #include "spin.h"
+#include "global.h"
 
 #define PI 3.14159265
 
@@ -184,7 +185,7 @@ class MAXSAT : public Evaluator {
   create_evaluator(MAXSAT);
  private:
   int precision;
-  SATinstance mySAT;
+  // SATinstance mySAT;
 };
 
 // The Ising Spin Glass problem is defined by a 2d toroidal grid
@@ -200,7 +201,7 @@ class IsingSpinGlass : public Evaluator {
  private:
   int length;
   int precision;
-  SPINinstance mySPIN;
+  // SPINinstance mySPIN;
 };
 
 // Discretization of the common Rastrigin function into grey coded bits.

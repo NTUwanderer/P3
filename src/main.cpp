@@ -57,11 +57,13 @@ using namespace std;
 #include "OptimizationCollection.h"
 #include "Record.h"
 #include "Experiments.h"
+#include "global.h"
 
 int main(int argc, char * argv[]) {
   // Parse the configuration options
   Configuration config;
   config.parse(argc, argv);
+
 
   // Set up the random number seed either using the configuration value
   // or the computers built in seed generator.

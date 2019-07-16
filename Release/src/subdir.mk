@@ -21,6 +21,14 @@ CPP_SRCS += \
 ../src/Util.cpp \
 ../src/sat.cpp \
 ../src/spin.cpp \
+../src/chromosome.cpp \
+../src/dsmga2.cpp \
+../src/fastcounting.cpp \
+../src/global.cpp \
+../src/mkp.cpp \
+../src/mt19937ar.cpp \
+../src/myrand.cpp \
+../src/nk-wa.cpp \
 ../src/main.cpp 
 
 OBJS += \
@@ -41,6 +49,14 @@ OBJS += \
 ./src/Util.o \
 ../src/sat.o \
 ../src/spin.o \
+../src/chromosome.o \
+../src/dsmga2.o \
+../src/fastcounting.o \
+../src/global.o \
+../src/mkp.o \
+../src/mt19937ar.o \
+../src/myrand.o \
+../src/nk-wa.o \
 ./src/main.o 
 
 CPP_DEPS += \
@@ -61,6 +77,14 @@ CPP_DEPS += \
 ./src/Util.d \
 ../src/sat.d \
 ../src/spin.d \
+../src/chromosome.d \
+../src/dsmga2.d \
+../src/fastcounting.d \
+../src/global.d \
+../src/mkp.d \
+../src/mt19937ar.d \
+../src/myrand.d \
+../src/nk-wa.d \
 ./src/main.d 
 
 

@@ -5,8 +5,11 @@
 // "Fast and Efficient Black Box Optimization using the Parameter-less Population Pyramid"
 // by B. W. Goldman and W. F. Punch
 
-#include "Pyramid.h"
 #include <sstream>
+#include <math.h>
+
+#include "Pyramid.h"
+#include "dsmga2.h"
 using std::endl;
 
 // Applies crossover between the passed in solution as each level
@@ -48,8 +51,17 @@ bool Pyramid::add_unique(const vector<bool> & solution, size_t level) {
 bool Pyramid::iterate() {
   // generate a random solution
   restarts++;
+
+  DSMGA2* dsmga2 = new DSMGA2(length, 4 * int(log(length)), -1, -1, 6);
+  dsmga2->doIt();
+  Chromosome p = dsmga2->population[dsmga2->bestIndex];
+
   vector<bool> solution = rand_vector(rand, length);
-  float fitness = local_counter->evaluate(solution);
+  for (int i = 0; i < length; ++i)
+      solution[i] = p.getVal(i);
+
+  float fitness = p.getFitness();
+  dsmga2NFE += Chromosome::nfe;
   // perform a local search hill climber
   hill_climber(rand, solution, fitness, local_counter);
   // perform crossover with each level of the pyramid
@@ -67,6 +79,8 @@ string Pyramid::finalize() {
       << std::static_pointer_cast<Middle_Layer>(local_counter)->evaluations
       << " Cross: "
       << std::static_pointer_cast<Middle_Layer>(cross_counter)->evaluations
+      << " dsmga2NFE: "
+      << dsmga2NFE
       << endl;
   // output column headers
   out << "Size\tSuccesses\tTies\tFailures\tFitness\tDonation_Attempts\tDonation_Failures"

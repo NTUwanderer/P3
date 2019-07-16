@@ -40,6 +40,7 @@ class Pyramid : public Optimizer {
   string finalize() override;
   create_optimizer(Pyramid);
 
+  int dsmga2NFE = 0;
  private:
   // Handles adding a solution to the population.
   // Returns true if it was unique and therefore added.
